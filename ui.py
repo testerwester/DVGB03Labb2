@@ -39,6 +39,8 @@ class TerminalUI:
                 self.delete_value()
             elif opt == "f":
                 self.is_member()
+            elif opt == "g":
+                self.show_2d()
             elif opt == "q":
                 break
             else:
@@ -79,6 +81,11 @@ class TerminalUI:
             v if v is not None else "*" for v in self._tree.bfs_order_star()
         ]))
         print("")
+        #*************************************************************
+        #               Extra for trouble shooting
+        #*************************************************************
+        print(f"Height is: {self._tree.height()}")
+        print(f"Size is: {self._tree.size()}")
 
     def add_value(self):
         '''add_value:
@@ -138,7 +145,7 @@ class TerminalUI:
             "a: add value",
             "d: delete value",
             "f: test membership",
-            "",
+            "g: show 2d",
             "q: quit",
         ]
 
@@ -176,7 +183,36 @@ class TerminalUI:
         Shows a pretty 2D tree based on the output of bfs_order_star(). None
         values are are replaced by stars ("*").
         '''
-        log.info("TODO@src/ui.py: implement show_2d() using bfs_order_star()")
+
+        #TODO
+        # Byt ut none mot *
+        #Se till så att slicing fungerar korrekt
+        presentList = self._tree.bfs_order_star()
+        
+
+        for index, node in enumerate(presentList):
+            newIndex = 1+(index*2)
+            if(node == None and newIndex <= len(presentList)):
+                presentList.insert(newIndex, "*")
+                presentList.insert(newIndex+1, "*")
+
+        newList = ['*' if x is None else x for x in presentList]
+        print(f"List from 2d is: {newList}")
+        self.print_2d(newList)
+
+    def print_2d(self, printList):
+        j = 0
+        for i in range(0, self._tree.height()):
+            #Add spacing
+            for j in range(j, 2**i):
+                #PRINT
+                #Spara J
+                print(f"J: {j}")
+            
+            #ADD NEWLINE
+
+
+
 
 if __name__ == "__main__":
     logging.critical("ui contains no main module")

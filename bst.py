@@ -22,20 +22,31 @@ class BST(bt.BT):
         '''
         logging.info("TODO@src/bst.py: implement is_member()")
         return False
+        #Tänk att det är som binary search
 
     def size(self):
         '''
         Returns the number of nodes in the tree.
         '''
-        logging.info("TODO@src/bst.py: implement size()")
-        return 0
+        if self.is_empty():
+            return 0
+        else:
+            return (1 + self.lc().size() + self.rc().size())
 
     def height(self):
         '''
         Returns the height of the tree.
         '''
-        logging.info("TODO@src/bst.py: implement height()")
-        return 0
+        if self.is_empty():
+            return 0
+        else:
+            #Left branch call recursivley
+            leftBranch = self.lc().height()
+            #Right branch call recursively
+            rightBranch = self.rc().height()
+            
+            #Returns largets value of rightBranch and leftBranch + 1
+            return 1 + max(rightBranch, leftBranch)
 
     def preorder(self):
         '''
@@ -49,15 +60,17 @@ class BST(bt.BT):
         '''
         Returns a list of all members in inorder.
         '''
-        log.info("TODO@src/bst.py: implement inorder()")
-        return []
+        if self.is_empty():
+            return []
+        return self.lc().inorder() + [self.value()] + self.rc().inorder()
 
     def postorder(self):
         '''
         Returns a list of all members in postorder.
         '''
-        log.info("TODO@src/bst.py: implement postorder()")
-        return []
+        if self.is_empty():
+            return []
+        return self.lc().postorder() + self.rc().postorder() + [self.value()]
 
     def bfs_order_star(self):
         '''
@@ -66,14 +79,42 @@ class BST(bt.BT):
 
         For example, consider the following tree `t`:
                     10
-              5           15
+              5          15
            *     *     *     20
 
         The output of t.bfs_order_star() should be:
         [ 10, 5, 15, None, None, None, 20 ]
         '''
-        log.info("TODO@src/bst.py: implement bfs_order_star()")
-        return []
+
+        if self.is_empty():
+            return []
+        
+        queue = []
+        returnList = []
+
+        queue.append(self)
+
+        while(len(queue)>0):
+            returnList.append(queue[0].value()) #Adds value of node in queue
+            node = queue.pop(0)
+
+            #Adds left node to queue if not None
+            if node.lc() is not None:
+                queue.append(node.lc())
+
+            #Adds right node to queue if not None
+            if node.rc() is not None:
+                queue.append(node.rc())
+
+        #Removes unescessary None at line that shouldn't be showed
+        for x in reversed(returnList):
+            if x == None:
+                returnList.pop()
+            else:
+                break
+
+
+        return returnList
 
     def add(self, v):
         '''

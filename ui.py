@@ -70,7 +70,7 @@ class TerminalUI:
             print("\n  Tree is empty\n")
             return
 
-        self.show_2d()
+        #self.show_2d()
         print("")
         print("Size:      {}".format(self._tree.size()))
         print("Height:    {}".format(self._tree.height()))
@@ -183,35 +183,19 @@ class TerminalUI:
         Shows a pretty 2D tree based on the output of bfs_order_star(). None
         values are are replaced by stars ("*").
         '''
+        treeList = self._tree.bfs_order_star() #Grab bfs raw data
+        height = self._tree.height()
+        index = 0
 
-        #TODO
-        # Byt ut none mot *
-        #Se till så att slicing fungerar korrekt
-        presentList = self._tree.bfs_order_star()
-        
+        printList = ['*' if x is None else x for x in treeList] #Replaces None with "*"
 
-        for index, node in enumerate(presentList):
-            newIndex = 1+(index*2)
-            if(node == None and newIndex <= len(presentList)):
-                presentList.insert(newIndex, "*")
-                presentList.insert(newIndex+1, "*")
-
-        newList = ['*' if x is None else x for x in presentList]
-        print(f"List from 2d is: {newList}")
-        self.print_2d(newList)
-
-    def print_2d(self, printList):
-        j = 0
-        for i in range(0, self._tree.height()):
-            #Add spacing
-            for j in range(j, 2**i):
-                #PRINT
-                #Spara J
-                print(f"J: {j}")
-            
-            #ADD NEWLINE
-
-
+        for i in range(0, height):
+            width = (6 * (2**(height-i-1))+(height-i)) #Where 5 is base size of one char in leaf node
+            print("{spacing:<{padding}}".format(spacing='>', padding=(height-i)), end ='')
+            for j in range(0,2**i): #Prints all chars on certain height
+                print("{value:^{width}}".format( value=printList[index], width=width), end='')
+                index += 1
+            print("|\n")
 
 
 if __name__ == "__main__":

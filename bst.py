@@ -20,8 +20,18 @@ class BST(bt.BT):
         '''
         Returns true if the value `v` is a member of the tree.
         '''
-        logging.info("TODO@src/bst.py: implement is_member()")
-        return False
+        #Returns false when bottom has been reached
+        if self.is_empty():
+            return False
+        #Returns true when value has been found in node
+        elif self.value() == v:
+            return True
+        #Returns bool from right when v is larger than node value
+        elif v > self.value():
+            return self.rc().is_member(v)
+        #Returns bool from left v is smaller than node value 
+        elif v < self.value():
+            return self.lc().is_member(v)
         #Tänk att det är som binary search
 
     def size(self):
@@ -76,22 +86,13 @@ class BST(bt.BT):
         '''
         Returns a list of all members in breadth-first search* order, which
         means that empty nodes are denoted by "stars" (here the value None).
-
-        For example, consider the following tree `t`:
-                    10
-              5          15
-           *     *     *     20
-
-        The output of t.bfs_order_star() should be:
-        [ 10, 5, 15, None, None, None, 20 ]
         '''
-
         if self.is_empty():
             return []
-        
         queue = []
+        size = ((2**self.height())-1)
         returnList = []
-
+        
         queue.append(self)
 
         while(len(queue)>0):
@@ -101,17 +102,23 @@ class BST(bt.BT):
             #Adds left node to queue if not None
             if node.lc() is not None:
                 queue.append(node.lc())
-
             #Adds right node to queue if not None
             if node.rc() is not None:
                 queue.append(node.rc())
 
-        #Removes unescessary None at line that shouldn't be showed
-        for x in reversed(returnList):
-            if x == None:
+
+        #Adds missing nodes, compares temporary and newly added with differing None and '*'
+        for i in range (0, size):
+            if returnList[i] == None or returnList[i] == '*':
+                returnList.insert((i*2)+1, '*')
+                returnList.insert((i*2)+2, '*')
+
+        #Swaps back values from * to None and removes false tail
+        for index, value in enumerate(returnList):
+            if value is '*':
+                returnList[index] = None
+            if(len(returnList) > size):
                 returnList.pop()
-            else:
-                break
 
 
         return returnList
@@ -129,14 +136,39 @@ class BST(bt.BT):
         if v > self.value():
             return self.cons(self.lc(), self.rc().add(v))
         return self
+
     
     def delete(self, v):
         '''
         Removes the value `v` from the tree and returns the new (updated) tree.
         If `v` is a non-member, the same tree is returned without modification.
         '''
-        log.info("TODO@src/bst.py: implement delete()")
-        return self
+
+        if self.is_empty():
+            print("Is empty")
+            return self
+        elif v < self.value():
+            return self.cons(self.lc().delete(v), self.rc())
+        elif v > self.value():
+            return self.cons(self.rc().delete(v), self.lc())
+        elif v == self.value():
+            return self._delete_root(v)
+
+    def _delete_root(self, v):
+        if self.is_empty():
+            return self
+        elif(self.lc().value() is None and self.rc().value() is None):
+            print("This node is a leaf node")
+            return self
+        elif(self.lc().value() is None or self.rc().value() is None):
+            print("One of the nodes is None")
+            return self
+        elif(self.lc().value() is not None and self.rc().value() is not None):
+            print("Thus fucker has two nodes to it")
+            print(self.lc())
+            return self
+
+
 
 if __name__ == "__main__":
     log.critical("module contains no main module")

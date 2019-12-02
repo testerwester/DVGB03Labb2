@@ -141,13 +141,13 @@ class BST(bt.BT):
 
     def _getMinRight(self):
         if self.lc().value() is not None:
-            self.lc()._getMinRight()
+            return self.lc()._getMinRight()
         else:
             return self
 
     def _getMaxLeft(self):
         if self.rc().value() is not None:
-            self.rc()._getMaxLeft()
+            return self.rc()._getMaxLeft()
         else:
             return self
 
@@ -182,16 +182,20 @@ class BST(bt.BT):
 
             #If right child is deeper
             if(righteyHightey > lefteyHightey):
-                temp = self.rc()._getMinRight()         #Gets node with least value on right side
-                self.set_value(temp.value())            #Sets current value as that from minRight node
-                self.rc().delete(temp.value())          #Deletes lowest node, since value has been copied
-                return self.cons(self.lc(), temp.rc()) #Returns root to BT contstructed by left child and new right child
+                temp = self.rc()._getMinRight()                   
+                self.set_value(temp.value())
+                if(self.value() == self.rc().value()):
+                    self.set_rc(temp.rc())
+                self.rc().delete(temp.value())
+                return self.cons(self.lc(), self.rc()) 
             #If left child is deeper or equal to right child depth
             else:
-                temp = self.lc()._getMaxLeft()          #Gets node with highest value on right side
-                self.set_value(temp.value())            #Sets current value as that from MaxLeft node
-                self.lc().delete(temp.value())          #Deletes the selected node, based on key, offset from root
-                return self.cons(temp.lc(), self.rc())  #Returns Root to BT constructed by new left child and original right cild
+                temp = self.lc()._getMaxLeft()          
+                self.set_value(temp.value())
+                if(self.value() == self.lc().value()):
+                    self.set_lc(temp.lc())              
+                self.lc().delete(temp.value())          
+                return self.cons(self.lc(), self.rc())  
 
 
 

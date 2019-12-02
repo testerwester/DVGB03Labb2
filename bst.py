@@ -132,10 +132,26 @@ class BST(bt.BT):
             self.__init__(value=v)
             return self
         if v < self.value():
-            return self.cons(self.lc().add(v), self.rc())
+            return self.cons(self.lc().__add(v), self.rc())
         if v > self.value():
-            return self.cons(self.lc(), self.rc().add(v))
+            return self.cons(self.lc(), self.rc().__add(v))
         return self
+    #Name mangle so that recursive super function works
+    __add = add
+
+    def _getMinRight(self):
+        if self.lc().value() is not None:
+            self.lc()._getMinRight()
+        else:
+            print(f"Me from min right min: {self.value()}")
+            return self
+
+    def _getMaxLeft(self):
+        if self.rc().value() is not None:
+            self.rc()._getMaxLeft()
+        else:
+            print(f"Me from min left max: {self.value()}")
+            return self
 
     
     def delete(self, v):
@@ -145,28 +161,40 @@ class BST(bt.BT):
         '''
 
         if self.is_empty():
-            print("Is empty")
             return self
         elif v < self.value():
             return self.cons(self.lc().delete(v), self.rc())
         elif v > self.value():
-            return self.cons(self.rc().delete(v), self.lc())
-        elif v == self.value():
-            return self._delete_root(v)
+            return self.cons(self.lc(), self.rc().delete(v))
 
-    def _delete_root(self, v):
-        if self.is_empty():
-            return self
-        elif(self.lc().value() is None and self.rc().value() is None):
-            print("This node is a leaf node")
-            return self
-        elif(self.lc().value() is None or self.rc().value() is None):
-            print("One of the nodes is None")
-            return self
-        elif(self.lc().value() is not None and self.rc().value() is not None):
-            print("Thus fucker has two nodes to it")
-            print(self.lc())
-            return self
+        #When node has none or only one node. 
+        if self.lc().value() is None:
+            temp = self.rc() #Stores child in temp var
+            self.set_value(None) #Nulls its value
+            return temp #Returns temp
+        elif self.rc().value() is None:
+            temp = self.lc()
+            self.set_value(None)
+            return temp
+
+        else:
+            #Checks which height is deeper
+            righteyHightey = self.rc().height()
+            lefteyHightey = self.lc().height()
+
+            #If right child is deeper
+            if(righteyHightey > lefteyHightey):
+                temp = self.rc()._getMinRight()         #Gets node with least value on right side
+                self.set_value(temp.value())            #Sets current value as that from minRight node
+                self.rc().delete(temp.value())          #Deletes lowest node, since value has been copied
+                return self.cons(self.lc(), temp.rc()) #Returns root to BT contstructed by left child and new right child
+            #If left child is deeper or equal to right child depth
+            else:
+                temp = self.lc()._getMaxLeft()          #Gets node with highest value on right side
+                self.set_value(temp.value())            #Sets current value as that from MaxLeft node
+                self.lc().delete(temp.value())          #Deletes the selected node, based on key, offset from root
+                return self.cons(temp.lc(), self.rc())  #Returns Root to BT constructed by new left child and original right cild
+
 
 
 

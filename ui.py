@@ -183,6 +183,8 @@ class TerminalUI:
         Shows a pretty 2D tree based on the output of bfs_order_star(). None
         values are are replaced by stars ("*").
         '''
+        if self._tree.is_empty():
+            print("\nTree is empty\n")
         treeList = self._tree.bfs_order_star() #Grab bfs raw data
         height = self._tree.height()
         index = 0
@@ -190,12 +192,12 @@ class TerminalUI:
         printList = ['*' if x is None else x for x in treeList] #Replaces None with "*"
 
         for i in range(0, height):
-            width = (6 * (2**(height-i-1))+(height-i)) #Where 5 is base size of one char in leaf node
+            width = (4 * (2**(height-i-1))+(height-i)) #Where 5 is base size of one char in leaf node
             print("{spacing:<{padding}}".format(spacing='>', padding=(height-i)), end ='')
-            for j in range(0,2**i): #Prints all chars on certain height
+            for j in range(0,2**i): #Prints all chars on certain height in tree where width defines spacing of one single node all nodes combined is x * 2(height-1)
                 print("{value:^{width}}".format( value=printList[index], width=width), end='')
                 index += 1
-            print("|\n")
+            print("\n")
 
 
 if __name__ == "__main__":

@@ -21,46 +21,99 @@ class AVL(bst.BST):
         Example which shows how to override and call parent methods.  You
         may remove this function and overide something else if you'd like.
         '''
-        log.debug("calling bst.BST.add() explicitly from child")
-        self.balance() # TODO: apply this method correctly for add/delete
-        return bst.BST.add(self, v)
+        bst.BST.add(self, v)
+        return self.balance() 
+
+    def delete(self, v):
+        '''
+        Deletes values by calling delete function from BST, balances tree and returns value.
+        '''
+
+        return self
 
     def balance(self):
         '''
         AVL-balances around the node rooted at `self`.  In other words, this
         method applies one of the following if necessary: slr, srr, dlr, drr.
         '''
-        log.info("TODO@src/avl.py: implement balance()")
-        self.slr().srr().dlr().drr() # TODO: apply these methods correctly
+        #Checks either side of self for balance and existance
+        if self.lc() is not None:
+            leftHeight = bst.BST.height(self.lc())
+        else: 
+            leftHeight = 0
+
+        if self.rc() is not None:
+            rightHeight = bst.BST.height(self.rc())
+        else: 
+            rightHeight = 0
+
+        #Gets absolute sum of left and right height
+        difference = abs(leftHeight - rightHeight)
+
+
+        #if right side is larger
+        if difference > 1 and rightHeight > leftHeight:
+                #DÄR NODEN ÄR PÅ HÖGERSIDAN
+                if self.rc().rc().value() is not None:
+                    #SLR
+                    return self.slr()
+                else:
+                    #DLR
+                    return self.dlr()
+
+                #return bst.BST.cons(self, self.lc(), self.rc().balance())
+
+        #If left side is larger
+        elif difference > 1 and leftHeight > rightHeight:
+                #DÄR NODEN ÄR PÅ VÄNSTERSIDAN
+                if self.lc().lc().value() is not None:
+                    #SRR
+                    return self.srr()
+                else:
+                    #DRR
+                    return self.drr()
+
+                #return bst.BST.cons(self, self.lc().balance(), self.rc())
+
+        #If none of the methods above are correct just return self. 
         return self
 
+    #Rotate left
     def slr(self):
         '''
         Performs a single-left rotate around the node rooted at `self`.
         '''
-        log.info("TODO@src/avl.py: implement slr()")
-        return self
+        print("From slr")
+        n1 = self.rc()
+        self.set_rc(n1.lc())
+        n1.set_lc(self)
+        return n1
 
+    #Rotate right
     def srr(self):
         '''
         Performs a single-right rotate around the node rooted at `self`.
         '''
-        log.info("TODO@src/avl.py: implement srr()")
-        return self
+        n1 = self.lc()
+        self.set_lc(n1.rc())
+        n1.set_rc(self)
+        return n1
 
+    #Rotate double right left
     def dlr(self):
         '''
         Performs a double-left rotate around the node rooted at `self`.
         '''
-        log.info("TODO@src/avl.py: implement drl()")
-        return self
+        self.set_rc(self.rc().srr())
+        return self.slr()
 
+    #Rotate double left right
     def drr(self):
         '''
         Performs a double-right rotate around the node rooted at `self`.
         '''
-        log.info("TODO@src/avl.py: implement drr()")
-        return self
+        self.set_lc(self.lc().slr())
+        return self.srr()
 
 if __name__ == "__main__":
     log.critical("module contains no main module")

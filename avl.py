@@ -28,8 +28,9 @@ class AVL(bst.BST):
         '''
         Deletes values by calling delete function from BST, balances tree and returns value.
         '''
-
-        return self
+        tree = bst.BST.delete(self, v) #Stores value from bst delete in tree
+        self.balance() #Calls balance to check if anything needs to be sorted
+        return tree
 
     def balance(self):
         '''
@@ -53,37 +54,26 @@ class AVL(bst.BST):
 
         #if right side is larger
         if difference > 1 and rightHeight > leftHeight:
-                #DÄR NODEN ÄR PÅ HÖGERSIDAN
                 if self.rc().rc().value() is not None:
-                    #SLR
                     return self.slr()
                 else:
-                    #DLR
                     return self.dlr()
-
-                #return bst.BST.cons(self, self.lc(), self.rc().balance())
 
         #If left side is larger
         elif difference > 1 and leftHeight > rightHeight:
-                #DÄR NODEN ÄR PÅ VÄNSTERSIDAN
                 if self.lc().lc().value() is not None:
-                    #SRR
                     return self.srr()
                 else:
-                    #DRR
                     return self.drr()
-
-                #return bst.BST.cons(self, self.lc().balance(), self.rc())
-
-        #If none of the methods above are correct just return self. 
-        return self
+        #If none of the methods above are correct just return self.
+        else:
+            return self
 
     #Rotate left
     def slr(self):
         '''
         Performs a single-left rotate around the node rooted at `self`.
         '''
-        print("From slr")
         n1 = self.rc()
         self.set_rc(n1.lc())
         n1.set_lc(self)

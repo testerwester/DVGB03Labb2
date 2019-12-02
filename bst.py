@@ -143,14 +143,12 @@ class BST(bt.BT):
         if self.lc().value() is not None:
             self.lc()._getMinRight()
         else:
-            print(f"Me from min right min: {self.value()}")
             return self
 
     def _getMaxLeft(self):
         if self.rc().value() is not None:
             self.rc()._getMaxLeft()
         else:
-            print(f"Me from min left max: {self.value()}")
             return self
 
     

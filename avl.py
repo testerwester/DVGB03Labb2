@@ -21,16 +21,14 @@ class AVL(bst.BST):
         Example which shows how to override and call parent methods.  You
         may remove this function and overide something else if you'd like.
         '''
-        bst.BST.add(self, v)
-        return self.balance() 
+        return bst.BST.add(self, v).balance()
 
     def delete(self, v):
         '''
         Deletes values by calling delete function from BST, balances tree and returns value.
         '''
-        tree = bst.BST.delete(self, v) #Stores value from bst delete in tree
-        self.balance() #Calls balance to check if anything needs to be sorted
-        return tree
+        print("Running delete")
+        return bst.BST.delete(self, v).balance()
 
     def balance(self):
         '''
@@ -51,21 +49,31 @@ class AVL(bst.BST):
         #Gets absolute sum of left and right height
         difference = abs(leftHeight - rightHeight)
 
-
-        #if right side is larger
-        if difference > 1 and rightHeight > leftHeight:
-                if self.rc().rc().value() is not None:
-                    return self.slr()
-                else:
-                    return self.dlr()
-
-        #If left side is larger
-        elif difference > 1 and leftHeight > rightHeight:
-                if self.lc().lc().value() is not None:
+        #Unbalanced
+        if difference >= 2:
+            print("Unbalanced")
+            #Case 1 eller 2
+            if self.lc().height() >= self.rc().height():
+                #Case 1 SRR
+                if self.lc().lc().height() >= self.lc().rc().height():
+                    print("SRR")
                     return self.srr()
-                else:
+                else: # self.lc().lc().height() < self.lc().rc().height():
+                    print("DRR")
                     return self.drr()
-        #If none of the methods above are correct just return self.
+                #else:
+                    #return self.cons(self.lc().balance(), self.rc())
+            #Case 3 or 4        
+            else:
+                #Case 3 DLR
+                if self.rc().lc().height() > self.rc().rc().height():
+                    print("DLR")
+                    return self.dlr()
+                else: # self.rc().lc().height() < self.rc().rc().height():
+                    print("SLR")
+                    return self.slr()
+                #else:
+                    #return self.cons(self.lc(), self.rc().balance())
         else:
             return self
 

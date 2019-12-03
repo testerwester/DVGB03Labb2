@@ -54,7 +54,8 @@ class BST(bt.BT):
             leftBranch = self.lc().height()
             #Right branch call recursively
             rightBranch = self.rc().height()
-            
+
+
             #Returns largets value of rightBranch and leftBranch + 1
             return 1 + max(rightBranch, leftBranch)
 
@@ -132,12 +133,10 @@ class BST(bt.BT):
             self.__init__(value=v)
             return self
         if v < self.value():
-            return self.cons(self.lc().__add(v), self.rc())
+            return self.cons(self.lc().add(v), self.rc())
         if v > self.value():
-            return self.cons(self.lc(), self.rc().__add(v))
+            return self.cons(self.lc(), self.rc().add(v))
         return self
-    #Name mangle so that recursive super function works
-    __add = add
 
     def _getMinRight(self):
         if self.lc().value() is not None:
@@ -161,11 +160,18 @@ class BST(bt.BT):
         if self.is_empty():
             return self
         elif v < self.value():
-            return self.cons(self.lc().delete(v), self.rc())
+            return self.cons(self.lc().__delete(v), self.rc())
         elif v > self.value():
-            return self.cons(self.lc(), self.rc().delete(v))
+            return self.cons(self.lc(), self.rc().__delete(v))
+        
+        #Remove when node has no children
+        if self.lc().value() is None and self.rc().value() is None:
+            self.set_value(None)
+            self.set_lc(None) #Nulls children so that it works with BFS
+            self.set_rc(None) #Nulls children so that it works with BFS
+            return self
 
-        #When node has none or only one node. 
+        #When node has one child
         if self.lc().value() is None:
             temp = self.rc() #Stores child in temp var
             self.set_value(None) #Nulls its value
@@ -184,20 +190,32 @@ class BST(bt.BT):
             if(righteyHightey > lefteyHightey):
                 temp = self.rc()._getMinRight()                   
                 self.set_value(temp.value())
-                if(self.value() == self.rc().value()):
-                    self.set_rc(temp.rc())
-                self.rc().delete(temp.value())
-                return self.cons(self.lc(), self.rc()) 
+                if temp.rc().value() is not None:
+                    temp.set_value(temp.rc().value())
+                    temp.cons(temp.rc().rc(), temp.rc().lc())
+                    return self.cons(self.lc(), self.rc()) #Tog bort temp.rc()
+                else:
+                    self.rc().__delete(temp.value())
+                    return self.cons(self.lc(), self.rc())
             #If left child is deeper or equal to right child depth
             else:
                 temp = self.lc()._getMaxLeft()          
                 self.set_value(temp.value())
-                if(self.value() == self.lc().value()):
-                    self.set_lc(temp.lc())              
-                self.lc().delete(temp.value())          
-                return self.cons(self.lc(), self.rc())  
+
+                if temp.rc().value() is not None:
+                    temp.set_value(temp.rc().value())
+                    return self.cons(self.lc(), temp.rc())
+                if temp.lc().value() is not None:
+                    temp.set_value(temp.lc().value())
+                    temp.cons(temp.lc().lc(), temp.lc().rc())
+                    return self.cons(self.lc(), self.rc()) #FUNGERAR FÖR 7 MEN INTE FÖR 15
+                else:
+                    self.lc().__delete(temp.value())       
+                    return self.cons(self.lc(), self.rc())  
 
 
+    #Name mangle for delete
+    __delete = delete
 
 
 if __name__ == "__main__":

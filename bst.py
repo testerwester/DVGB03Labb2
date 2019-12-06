@@ -111,8 +111,8 @@ class BST(bt.BT):
         #Adds missing nodes, compares temporary and newly added with differing None and '*'
         for i in range (0, size):
             if returnList[i] == None or returnList[i] == '*':
-                returnList.insert((i*2)+1, '*')
-                returnList.insert((i*2)+2, '*')
+                returnList.insert((i*2)+1, None)
+                returnList.insert((i*2)+2, None)
 
         #Swaps back values from * to None and removes false tail
         for index, value in enumerate(returnList):
@@ -138,12 +138,13 @@ class BST(bt.BT):
             return self.cons(self.lc(), self.rc().add(v))
         return self
 
+    #Returns node with highest value on left side of self
     def _getMinRight(self):
         if self.lc().value() is not None:
             return self.lc()._getMinRight()
         else:
             return self
-
+    #Returns node with highest value on right side of self
     def _getMaxLeft(self):
         if self.rc().value() is not None:
             return self.rc()._getMaxLeft()
@@ -157,6 +158,7 @@ class BST(bt.BT):
         If `v` is a non-member, the same tree is returned without modification.
         '''
 
+        #Searches for node
         if self.is_empty():
             return self
         elif v < self.value():
@@ -190,6 +192,7 @@ class BST(bt.BT):
             if(righteyHightey > lefteyHightey):
                 temp = self.rc()._getMinRight()                   
                 self.set_value(temp.value())
+                #When minRight has children use cons to swap previous value and conc lc & rc
                 if temp.rc().value() is not None:
                     temp.set_value(temp.rc().value())
                     temp.cons(temp.rc().rc(), temp.rc().lc())
@@ -201,20 +204,21 @@ class BST(bt.BT):
             else:
                 temp = self.lc()._getMaxLeft()          
                 self.set_value(temp.value())
-
+                #Maxleft has right children
                 if temp.rc().value() is not None:
                     temp.set_value(temp.rc().value())
                     return self.cons(self.lc(), temp.rc())
+                #When maxLeft has an inner child (what!?) swap previous value and conc lc and rc
                 if temp.lc().value() is not None:
                     temp.set_value(temp.lc().value())
                     temp.cons(temp.lc().lc(), temp.lc().rc())
-                    return self.cons(self.lc(), self.rc()) #FUNGERAR FÖR 7 MEN INTE FÖR 15
+                    return self.cons(self.lc(), self.rc()) 
                 else:
                     self.lc().__delete(temp.value())       
                     return self.cons(self.lc(), self.rc())  
 
 
-    #Name mangle for delete
+    #Name mangle for delete to stop it from going calling inherited classes with overriding functions
     __delete = delete
 
 

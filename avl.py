@@ -18,16 +18,16 @@ class AVL(bst.BST):
 
     def add(self, v):
         '''
-        Example which shows how to override and call parent methods.  You
-        may remove this function and overide something else if you'd like.
+        Adds values by calling add function from BST, balances tree and returns value.
         '''
+        #Returns a balanced tree which uses add from BST
         return bst.BST.add(self, v).balance()
 
     def delete(self, v):
         '''
         Deletes values by calling delete function from BST, balances tree and returns value.
         '''
-        print("Running delete")
+        #Returns a blaanced tree which uses delete from BST
         return bst.BST.delete(self, v).balance()
 
     def balance(self):
@@ -52,28 +52,25 @@ class AVL(bst.BST):
         #Unbalanced
         if difference >= 2:
             print("Unbalanced")
-            #Case 1 eller 2
+            #Case 1 or 2
             if self.lc().height() >= self.rc().height():
                 #Case 1 SRR
                 if self.lc().lc().height() >= self.lc().rc().height():
-                    print("SRR")
                     return self.srr()
-                else: # self.lc().lc().height() < self.lc().rc().height():
-                    print("DRR")
+                #Case 2 DRR
+                else: 
                     return self.drr()
-                #else:
-                    #return self.cons(self.lc().balance(), self.rc())
+
             #Case 3 or 4        
             else:
                 #Case 3 DLR
                 if self.rc().lc().height() > self.rc().rc().height():
-                    print("DLR")
                     return self.dlr()
-                else: # self.rc().lc().height() < self.rc().rc().height():
-                    print("SLR")
+                #Case 3 SLR
+                else: 
                     return self.slr()
-                #else:
-                    #return self.cons(self.lc(), self.rc().balance())
+
+        #Returns self when nothing has been balanced
         else:
             return self
 

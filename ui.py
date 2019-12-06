@@ -80,12 +80,9 @@ class TerminalUI:
         print("BFS star:  {}".format([
             v if v is not None else "*" for v in self._tree.bfs_order_star()
         ]))
-        print("")
-        #*************************************************************
-        #               Extra for trouble shooting
-        #*************************************************************
-        print(f"Height is: {self._tree.height()}")
-        print(f"Size is: {self._tree.size()}")
+        self.show_2d()
+
+
 
     def add_value(self):
         '''add_value:
@@ -145,7 +142,7 @@ class TerminalUI:
             "a: add value",
             "d: delete value",
             "f: test membership",
-            "g: show 2d",
+            "",
             "q: quit",
         ]
 
@@ -188,12 +185,13 @@ class TerminalUI:
         treeList = self._tree.bfs_order_star() #Grab bfs raw data
         height = self._tree.height()
         index = 0
+        baseWidth = 4 #Decides width for single node on bottom level. All other levels based on this
 
         printList = ['*' if x is None else x for x in treeList] #Replaces None with "*"
 
         for i in range(0, height):
-            width = (4 * (2**(height-i-1))+(height-i)) #Where 5 is base size of one char in leaf node
-            print("{spacing:<{padding}}".format(spacing='>', padding=(height-i)), end ='')
+            width = (baseWidth * (2**(height-i-1))+(height-i)) #Calculates how wide a space should be based on height
+            print("{spacing:<{padding}}".format(spacing='>', padding=(height-i)), end ='') #Adds left padding to center nodes on higher heights to lower nodes
             for j in range(0,2**i): #Prints all chars on certain height in tree where width defines spacing of one single node all nodes combined is x * 2(height-1)
                 print("{value:^{width}}".format( value=printList[index], width=width), end='')
                 index += 1

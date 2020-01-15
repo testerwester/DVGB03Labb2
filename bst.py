@@ -162,9 +162,9 @@ class BST(bt.BT):
         if self.is_empty():
             return self
         elif v < self.value():
-            return self.cons(self.lc().__delete(v), self.rc())
+            return self.cons(self.lc().delete(v), self.rc()) #Tog bort __delete
         elif v > self.value():
-            return self.cons(self.lc(), self.rc().__delete(v))
+            return self.cons(self.lc(), self.rc().delete(v)) #Tog bort __delete
         
         #Remove when node has no children
         if self.lc().value() is None and self.rc().value() is None:
@@ -219,7 +219,7 @@ class BST(bt.BT):
 
 
     #Name mangle for delete to stop it from going calling inherited classes with overriding functions
-    __delete = delete
+    #__delete = delete #Removed from original code 
 
 
 if __name__ == "__main__":
